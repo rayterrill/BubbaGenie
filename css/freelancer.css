@@ -70,7 +70,8 @@ hr.star-primary:after {
   margin: 0 auto; }
 
 section {
-  padding: 100px 0; }
+  padding-top: 0;
+  padding-bottom: 0;}
   section h2 {
     font-size: 3em;
     margin: 0; }
