@@ -88,7 +88,7 @@
         <div class="container">
           <div class="row">
             <div class="col-lg-12">
-              Copyright &copy; Ray Terrill
+              Made with &hearts; by Ray Terrill
             </div>
           </div>
         </div>
@@ -172,7 +172,11 @@
                       }
                    }
                 }
-                $("#emotions").html(emotions);
+                if (emotions) {
+                    $("#emotions").html(emotions);
+                } else {
+                    $("#emotions").html("Not confident enough to pick an emotion :(");
+                }
 
             });
             
