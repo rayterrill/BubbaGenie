@@ -17,6 +17,7 @@
     <link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
     <!-- Custom styles for this template -->
     <link href="css/freelancer.css" rel="stylesheet">
@@ -45,14 +46,38 @@
             <input type='file' id="imgInp" /><br /><br />
         
             <img id="blah" src="#" style="max-height: 400px; max-width: 400px;"/>
-    </form>
+            </form>
         </div>
-    </form>
       </div>
     </header>
 
-    <!-- About Section -->
     <section class="success" id="about">
+    <div class="container collapse" id="waiting">
+        <div class="col-lg-12 ml-auto text-center">
+            <i class="fa fa-refresh fa-spin" style="font-size:80px"></i>
+            <br /><br />
+        </div>
+    </div>
+    
+    <div class="container collapse" id="details">
+       <h2 class="text-center">Details</h2>
+       <hr class="star-light">
+       <div class="col-lg-12 ml-auto">
+          <table border=1 style="width: 50%; margin: 0px auto;" class="table">
+          <tr><td align=center>AgeRange:</td><td align=center id=agerange></td></tr>
+          <tr><td align=center>Gender:</td><td align=center id=gender></td></tr>
+          <tr><td align=center>Beard:</td><td align=center id=beard></td></tr>
+          <tr><td align=center>Mustache:</td><td align=center id=mustache></td></tr>
+          <tr><td align=center>Smile:</td><td align=center id=smile></td></tr>
+          <tr><td align=center>Emotions:</td><td align=center id=emotions></td></tr>
+          </table>
+       </div>
+       <br /><br />
+    </div>
+    </success>
+
+    <!-- About Section -->
+    <section class="success" id="detailssection">
       <div class="container">
         <h2 class="text-center">About</h2>
         <hr class="star-light">
@@ -119,17 +144,52 @@
             var request = $.ajax({
                 method: "POST",
                 contentType: "application/json; charset=utf-8",
-                url: "http://ec2-54-69-55-210.us-west-2.compute.amazonaws.com:3000/getImageData",
+                url: "http://ec2-34-209-167-96.us-west-2.compute.amazonaws.com:3000/getImageData",
                 data: JSON.stringify(data)
             });
             
+            $("#waiting").collapse("toggle");
+            
             request.done(function(html) {
-                alert(html);
+                $("#waiting").collapse("toggle");
+                $("#details").collapse("toggle");
+                //alert(html);
+                $("#agerange").html(html.AgeRange.Low + " - " + html.AgeRange.High);
+                $("#gender").html(html.Gender.Value);
+                if (html.Beard.Value === true) {
+                   $("#beard").html('True');
+                } else {
+                   $("#beard").html('False');
+                }
+                if (html.Mustache.Value === true) {
+                   $("#mustache").html('True');
+                } else {
+                   $("#mustache").html('False');
+                }
+                if (html.Smile.Value === true) {
+                   $("#smile").html('True');
+                } else {
+                   $("#smile").html('False');
+                }
+                var emotionsLen = html.Emotions.length;
+                var emotions;
+                for (var i = 0; i < emotionsLen; i++) {
+                   if (html.Emotions[i].Confidence > 70) {
+                      if (emotions) {
+                         emotions = emotions + "," + html.Emotions[i].Type;
+                      } else {
+                         emotions = html.Emotions[i].Type
+                      }
+                   }
+                }
+                $("#emotions").html(emotions);
+
             });
             
             request.fail(function( jqXHR, textStatus ) {
                 alert( "Request failed: " + textStatus );
             });
+            
             }
             
             reader.readAsDataURL(input.files[0]);
@@ -139,6 +199,7 @@
     
     $("#imgInp").change(function(){
         readURL(this);
+        $("#details").collapse("hide");
     });
 </script>
   </body>
